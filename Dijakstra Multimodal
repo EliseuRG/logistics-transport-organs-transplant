@@ -1,0 +1,9 @@
+Você está correto, chamar o algoritmo de Dijkstra várias vezes pode ser custoso, especialmente para grandes grafos. Uma abordagem mais eficiente seria modificar o algoritmo de Dijkstra para lidar com múltiplos modos de transporte.
+
+Uma maneira de fazer isso seria adicionar um passo extra no algoritmo de Dijkstra para verificar todos os modos de transporte disponíveis e escolher o que resulta na menor distância. Isso permitiria que o algoritmo encontrasse o caminho mais curto considerando todos os modos de transporte.
+
+No entanto, essa abordagem ainda pode ser ineficiente se houver muitos modos de transporte e muitos nós no grafo. Uma abordagem mais eficiente seria usar um algoritmo de caminho mínimo multimodal, que é projetado especificamente para lidar com múltiplos modos de transporte.
+
+Um exemplo de tal algoritmo é o algoritmo de Dijkstra multimodal, que é uma extensão do algoritmo de Dijkstra que pode lidar com múltiplos modos de transporte. Este algoritmo considera cada modo de transporte como uma camada separada no grafo e encontra o caminho mais curto considerando todas as camadas.
+
+Infelizmente, a implementação desse algoritmo é bastante complexa e vai além do escopo desta conversa. Eu recomendaria procurar mais informações sobre algoritmos de caminho mínimo multimodal se você estiver interessado em implementar essa solução.

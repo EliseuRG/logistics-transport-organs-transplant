@@ -1,0 +1,237 @@
+Lógica Simplificada para Otimização de Transporte de Órgãos
+Objetivo: Encontrar a rota mais rápida para transportar um coração entre dois hospitais, considerando o uso de ambulância, helicóptero e avião.
+
+Restrições:
+ - Origem e Destino:
+   * Hospital doador (HD): onde o coração é retirado.
+   * Hospital receptor (HR): onde o coração será transplantado.
+ - Modais de Transporte:
+   * Terrestre: ambulância.
+   * Aéreo: helicóptero e avião.
+ - Distâncias e Modais:
+   * 100 km: terrestre/aéreo (helicóptero).
+   * 100-190 km: terrestre/aéreo (helicóptero).
+   * 190 km: terrestre/aéreo (avião).
+
+Parâmetros:
+ - Velocidade de cada veículo.
+ - Custos de cada modal.
+ - Tempos de embarque e desembarque.
+ - Distâncias entre os locais (hospitais, helipontos, aeroportos).
+ 
+Grafo:
+ - Representação visual de todas as possíveis conexões entre os locais, considerando os diferentes modais.
+ - Simplificação do grafo, unificando nós que representam o mesmo local.
+
+Possíveis Rotas:
+ - Combinações de modais para ir do hospital doador ao hospital receptor (ex: carro → helicóptero → avião).
+ 
+Dados dos Hospitais:
+ - Informações sobre distâncias, tempos e custos para cada hospital em relação aos diferentes modais e locais de conexão.
+ 
+Etapas do Transporte:
+ - Tempos de embarque, viagem e desembarque para cada trecho do trajeto.
+ - Tempo de cirurgia de remoção e implante do coração.
+ 
+Próximos Passos:
+ 1. Definir a função objetivo: O que queremos minimizar? Tempo total? Custo total? Uma combinação de ambos?
+ 2. Modelar o problema: Traduzir as restrições e parâmetros em um modelo matemático (ex: programação linear).
+ 3. Implementar o algoritmo: Escolher e implementar um algoritmo de otimização para encontrar a solução ótima (ex: Dijkstra, A*).
+ 4. Validar e analisar: Testar o modelo com dados reais e analisar os resultados para garantir a viabilidade e eficácia da solução.
+ 
+# Possibilidades de trajeto
+possibilidades_trajeto = [
+    ["HD", "HR"],
+    ["HD", "H2", "A1", "A2", "HR"],
+    ["HD", "H2", "A1", "A2", "H4", "HR"],
+    ["HD", "H2", "A1", "A2", "H3", "HR"],
+    ["HD", "H1", "H2", "A1", "A2", "HR"],
+    ["HD", "A1", "A2", "HR"],
+    ["HD", "A1", "A2", "H3", "HR"],
+    ["HD", "A1", "A2", "H3", "H4", "HR"],
+    ["HD", "A1", "A2", "H3", "HR"],
+    ["HD", "H4", "HR"],
+    ["HD", "H1", "H4", "HR"],
+    ["HD", "H1", "HR"]
+]
+
+
+# Abreviações e descrições
+abreviacoes = ["A1", "A2", "H1", "H2", "H3", "H4", "HD", "HR"]
+descricoes = [
+    "Aeroporto mais próximo possível do hospital doador",
+    "Aeroporto mais próximo possível do hospital receptor",
+    "Heliponto mais próximo possível do hospital doador",
+    "Heliponto mais próximo possível do A1",
+    "Heliponto mais próximo possível do A2",
+    "Heliponto mais próximo possível do hospital receptor",
+    "Hospital doador",
+    "Hospital receptor"
+]
+
+print("Abreviações: ", abreviacoes)
+print("Descrições: ", descricoes)
+
+
+# Parâmetros dos órgãos e tecidos
+orgaos = ["Coração", "Pulmão", "Fígado", "Pâncreas", "Rim", "Tecido"]
+tempos_maximos = ["Até 4hr", "4hr até 6hr", "Até 12hr", "Até 12hr", "Até 48hr", "Até 48hr"]
+
+print("Órgãos: ", orgaos)
+print("Tempos máximos: ", tempos_maximos)
+
+
+Todas as possı́veis rotas entre hospital doador e hospital receptor.
+# Possíveis rotas
+rotas = [
+    "Carro",
+    "Helicóptero",
+    "Carro → Helicóptero",
+    "Helicóptero → Carro",
+    "Carro → Helicóptero → Carro",
+    "Carro → Avião → Carro",
+    "Carro → Avião → Helicóptero",
+    "Carro → Avião → Carro → Helicóptero",
+    "Carro → Avião → Helicóptero → Carro",
+    "Carro → Avião → Carro → Helicóptero → Carro",
+    "Helicóptero → Avião → Carro",
+    "Helicóptero → Avião → Helicóptero",
+    "Helicóptero → Avião → Carro → Helicóptero",
+    "Helicóptero → Avião → Helicóptero → Carro",
+    "Helicóptero → Avião → Carro → Helicóptero → Carro",
+    "Carro → Helicóptero → Avião → Carro",
+    "Carro → Helicóptero → Avião → Helicóptero",
+    "Carro → Helicóptero → Avião → Carro → Helicóptero",
+    "Carro → Helicóptero → Avião → Helicóptero → Carro",
+    "Carro → Helicóptero → Avião → Carro → Helicóptero → Carro",
+    "Helicóptero → Carro → Avião → Carro",
+    "Helicóptero → Carro → Avião → Helicóptero",
+    "Helicóptero → Carro → Avião → Carro → Helicóptero",
+    "Helicóptero → Carro → Avião → Helicóptero → Carro",
+    "Helicóptero → Carro → Avião → Carro → Helicóptero → Carro",
+    "Carro → Helicóptero → Carro → Avião → Carro",
+    "Carro → Helicóptero → Carro → Avião → Helicóptero",
+    "Carro → Helicóptero → Carro → Avião → Carro → Helicóptero",
+    "Carro → Helicóptero → Carro → Avião → Helicóptero → Carro",
+    "Carro → Helicóptero → Carro → Avião → Carro → Helicóptero → Carro"
+]
+
+print("Rotas: ", rotas)
+
+
+
+# Dados dos hospitais
+hospitais = [
+    [518, 460, 2.76, 3.6, 12.05, 13.6, 4.8, 9.55, 9.55, 10.7, 469, 10, 12.7, 8.76, 58, 6.7, 1.6, 0, 741, 462.5, 457],
+    [631, 563.39, 16.75, 0, 22.94, 14.7, 563.39, 16.75, 12.94, 5.1, 525.89, 10, 12.7, 8.76, 58, 6.7, 1.6, 0, 7.41, 562, 562],
+    [688, 614.28, 1, 5, 14.19, 15.9, 616.96, 14.55, 14.55, 15.9, 630.35, 10, 12.7, 8.76, 5.8, 6.7, 1.6, 0, 7.41, 613.4, 613.4],
+    [533, 475.89, 2.41, 0, 2.41, 2, 475.89, 2.41, 2.41, 0, 481, 10, 12.7, 8.76, 58, 6.7, 1.6, 0, 7.41, 475, 475],
+    [550, 497.07, 45.14, 2.4, 49.55, 55.5, 497.75, 47.14, 48.57, 0, 469, 10, 12.7, 8.76, 5.8, 6.7, 1.6, 0, 7.41, 489.3, 490],
+    [679, 606.25, 1.69, 1.9, 22.94, 14.5, 603.57, 11.78, 11.78, 13.2, 601.78, 10, 12.7, 8.76, 5.8, 6.7, 1.6, 0, 7.41, 606.25, 606.25],
+    [871, 777.67, 8.57, 0.5, 8.57, 9.6, 777.67, 8.57, 8.57, 0, 881, 10, 12.7, 8.76, 5.8, 6.7, 1.6, 0, 741, 776.8, 783],
+    [413, 368.75, 2.32, 2.6, 5.71, 64, 357.14, 5.26, 5.26, 5.9, 358.03, 10, 12.7, 8.76, 5.8, 6.7, 1.6, 0, 7.41, 355.3, 361.6],
+    [409, 365.17, 1, 5, 14.19, 15.9, 616.96, 14.55, 14.55, 15.9, 358.03, 10, 12.7, 8.76, 5.8, 6.7, 1.6, 0, 741, 363.4, 361.6],
+    [1102, 983.928, 6.96, 0, 6.96, 78, 983.928, 6.96, 6.96, 0, 1006.25, 10, 12.7, 8.76, 5.8, 6.7, 1.6, 0, 741, 1005.3, 1005.3]
+]
+
+# Títulos das colunas
+titulos = [
+    "HD HR", "HD HR", "HD H2", "HD H1", "HD A1", "HD A1", "H1 HR", "H1 H2", "H1 A1", "H2 A1", 
+    "A1 A2", "A2 HR", "A2 HR", "A2 H4", "A2 H3", "H3 H4", "H4 HR", "H2=A1 A1", "H3 HR", "HD H4", 
+    "H1 H4"
+]
+
+# Modalidades de transporte
+modais = ["Ambulância", "Helicóptero", "Avião"]
+
+print("Titulos: ", titulos)
+print("Modais: ", modais)
+print("Hospitais: ", hospitais)
+																			
+# Possíveis etapas do processo de transporte (descrições resumidas)
+tempos_resumidos = [
+    "Embarque 1º ambulância",
+    "Viagem 1º ambulância",
+    "Desembarque 1º ambulância",
+    "Embarque 1º helicóptero",
+    "Viagem 1º helicóptero",
+    "Desembarque 1º helicóptero",
+    "Embarque 2º ambulância",
+    "Viagem 2º ambulância",
+    "Desembarque 2º ambulância",
+    "Embarque avião",
+    "Viagem avião",
+    "Desembarque avião",
+    "Embarque 3º ambulância",
+    "Viagem 3º ambulância",
+    "Desembarque 3º ambulância",
+    "Embarque 2º helicóptero",
+    "Viagem 2º helicóptero",
+    "Desembarque 2º helicóptero",
+    "Embarque 4º ambulância",
+    "Viagem 4º ambulância",
+    "Desembarque 4º ambulância",
+    "Finalização remoção coração doador",
+    "Inicialização implante coração receptor"
+]
+
+print("Tempos: ", tempos)
+
+# Tempos das 30 rotas calculados para o Hospital 1
+# Matriz de tempos calculados para o Hospital 1
+tempos_hospital_1 = [
+    [0.02, 5.755556, 0.02, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None],
+    [None, None, None, 0.25, 1.84, 0.25, None, None, None, None, None, None, None, None, None, None, None, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 1.832, 0.25, None, None, None, None, None, None, None, None, None, None, None, None, None, None],
+    [None, None, None, 0.25, 1.85, 0.25, 0.02, 0.035556, 0.02, None, None, None, None, None, None, None, None, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 1.828, 0.25, 0.02, 0.035556, 0.02, None, None, None, None, None, None, None, None, None, None, None],
+    [0.02, 0.30222, 0.02, None, None, None, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.282222, 0.02, None, None, None, None, None],
+    [0.02, 0.30222, 0.02, None, None, None, None, None, None, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.04, 0.25, None, None, None],
+    [0.02, 0.30222, 0.02, None, None, None, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.02964, 0.25, None, None, None],
+    [0.02, 0.30222, 0.02, None, None, None, None, None, None, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.03504, 0.25, 0.02, 0.035556, 0.02],
+    [0.02, 0.30222, 0.02, None, None, None, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.0268, 0.25, 0.02, 0.035556, 0.02],
+    [None, None, None, 0.25, 0.0482, 0.25, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.282222, 0.02, None, None, None, None, None],
+    [None, None, None, 0.25, 0.0482, 0.25, None, None, None, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.04, 0.25, None, None, None],
+    [None, None, None, 0.25, 0.0482, 0.25, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.02964, 0.25, None, None, None],
+    [None, None, None, 0.25, 0.0482, 0.25, None, None, None, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.03504, 0.25, 0.02, 0.035556, 0.02],
+    [None, None, None, 0.25, 0.0482, 0.25, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.0268, 0.25, 0.02, 0.035556, 0.02],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.282222, 0.02, None, None, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, None, None, None, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.04, 0.25, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.02964, 0.25, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, None, None, None, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.03504, 0.25, 0.02, 0.035556, 0.02],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, None, None, None, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.0268, 0.25, 0.02, 0.035556, 0.02],
+    [None, None, None, 0.25, 0.01104, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, 0.02, 0.282222, 0.02, None, None, None, None, None],
+    [None, None, None, 0.25, 0.01104, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.04, 0.25, None, None, None],
+    [None, None, None, 0.25, 0.01104, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.02964, 0.25, None, None],
+    [None, None, None, 0.25, 0.01104, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.03504, 0.25, 0.02, 0.035556, 0.02],
+    [None, None, None, 0.25, 0.01104, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.0268, 0.25, 0.02, 0.035556, 0.02],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, 0.02, 0.282222, 0.02, None, None, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.04, 0.25, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.02964, 0.25, None, None, None],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, None, None, None, 0.25, 0.03504, 0.25, 0.02, 0.035556, 0.02],
+    [0.02, 0.08, 0.02, 0.25, 0.0382, 0.25, 0.02, 0.237778, 0.02, 0.5, 0.625333, 0.5, 0.02, 0.128889, 0.02, 0.25, 0.0268, 0.25, 0.02, 0.035556, 0.02]
+]
+
+# Colunas
+colunas = [
+    "FIN_REM", "EMBARQ1_AMBU", "VIAGEM1_AMBU", "DESEMB1_AMBU", "EMBARQ1_HELI", "VIAGEM1_HELI", "DESEMB1_HELI", 
+    "EMBARQ2_AMBU", "VIAGEM2_AMBU", "DESEMB2_AMBU", "EMBARQ1_AVIA", "VIAGEM1_AVIA", "DESEMB1_AVIA", "EMBARQ3_AMBU", 
+    "VIAGEM3_AMBU", "DESEMB3_AMBU", "EMBARQ2_HELI", "VIAGEM2_HELI", "DESEMB2_HELI", "EMBARQ4_HELI", "VIAGEM4_HELI", 
+    "DESEMB4_HELI", "INI_REMO", "TOTAL"
+]
+
+print("Colunas: ", colunas)
+print("Tempos calculados: ", tempos_hospital_1)
+
+O texto discute problemas de otimização em redes de transporte multimodal, focando em encontrar o caminho de menor custo considerando diferentes modais de transporte. Abordagens incluem modelos matemáticos, algoritmos e frameworks para otimizar custos, tempo, emissões de CO2 e riscos.
+
+Para simplificar e focar nos cálculos, vamos extrair as equações e fórmulas chave apresentadas no texto:
+
+1 Equação para problema de caminho mínimo para transporte multimodal:
+2 Função linear para modelar custos de transporte:
+3 Equação para problema de redes de transporte multimodal:
+4 Fórmulas de cálculo de custos no framework proposto:
+4.1Custo total da rota
+4.2Tempo total da rota
+5 Modelo matemático de otimização:
+Essas equações e fórmulas fornecem a base para os cálculos em problemas de otimização de transporte multimodal. As variáveis e parâmetros específicos dependerão do contexto e dos dados disponíveis para cada problema.

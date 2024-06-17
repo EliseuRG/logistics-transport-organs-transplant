@@ -1,0 +1,18 @@
+I – Objetivo da atividade: realizar trabalho de aplicação de conceitos na solução de problemas. 
+II – Descrição da atividade: deve-se elaborar um texto contendo seu nome, a definição do problema 
+aplicado que você quer resolver e o nome do algoritmo que você utilizará para resolvê-lo. 
+III – Cronograma: toda aula o aluno terá o professor para discutir a sua AED, principalmente, no 
+esclarecimento da correspondência entre o problema que o aluno quer resolver com o modelo de 
+otimização em grafos para caminho mais curto ou de ordenação usando quicksort ou heapsort. Data de 
+entrega: na aula correspondente à prova P4. 
+IV – Forma de registro: deve-se elaborar primeio contendo seu nome e a definição do problema 
+aplicado que você quer resolver, segundo para o cálculo da 
+complexidade do algoritmo associado ao problema escolhido, terceiro mostrando no seu 
+código o projeto de algoritmo que você utilizará para resolvê-lo e último apresentar o 
+resultado através de implementação no seu computador. Dessa forma, o aluno estará planejando a 
+aplicação de conceitos na solução de problemas. 
+
+problema de ordenação com algoritmo quicksort. problema de ordenação com algoritmo heapsort.  problema de otimização em grafos caminho mais 
+curto com algoritmo de Dijkstra.
+
+dado esse contexto, como posso elaborar um desses projetos seja criativo na escolha do projeto, nao use um exemplo muito trivialem python?
